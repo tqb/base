@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="base.dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
+		<property name="driver">
+			<value>${db.driver}</value>
+		</property>
+		<property name="driverUrl">
+			<value>${db.driver_url}</value>
+		</property>
+		<property name="user">
+			<value>${db.user}</value>
+		</property>
+		<property name="password">
+			<value>${db.password}</value>
+		</property>
+		<!-- <property name="houseKeepingSleepTime"> <value>60000</value> </property> -->
+		<property name="houseKeepingTestSql">
+			<value>${db.test_sql}</value>
+		</property>
+		<property name="maximumActiveTime">
+			<value>4800000</value>
+		</property>
+		<property name="maximumConnectionCount">
+			<value>${db.connection.max}</value>
+		</property>
+		<!-- <property name="maximumConnectionLifetime"> <value>28800000</value> </property> -->
+		<property name="minimumConnectionCount">
+			<value>${db.connection.min}</value>
+		</property>
+		<property name="statistics">
+			<value>1m,30m,1h,12h,1d</value>
+		</property>
+		<property name="testAfterUse">
+			<value>false</value>
+		</property>
+	</bean>
+
+	<bean id="base.sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="base.dataSource" />
+		<property name="configurationClass">
+			<value>org.hibernate.cfg.AnnotationConfiguration</value>
+		</property>
+		<property name="configLocation">
+			<value>classpath:base/config/hibernate/hibernate.cfg.xml</value>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl}</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<!-- <prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory</prop> -->
+			</props>
+		</property>
+	</bean>
+	<alias name="base.sessionFactory" alias="custom_sessionFactory" />
+
+	<bean id="base.transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="base.sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="base.transactionManager" />
+</beans>

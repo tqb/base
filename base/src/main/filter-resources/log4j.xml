@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="log.file" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${log.dir}/connections.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %t %-5p %c - %m%n" />
+		</layout>
+	</appender>
+	<appender name="log.console" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %t %c - %m%n" />
+		</layout>
+	</appender>
+
+	<category name="java.lang">
+		<priority value="debug" />
+	</category>
+	<category name="org.quartz">
+		<priority value="info" />
+	</category>
+	<category name="org.hibernate">
+		<priority value="info" />
+	</category>
+	<category name="org.springframework">
+		<priority value="info" />
+	</category>
+	<category name="base">
+		<priority value="debug" />
+	</category>
+
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="log.console" />
+	</root>
+</log4j:configuration>
